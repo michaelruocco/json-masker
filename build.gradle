@@ -93,6 +93,11 @@ jacocoTestReport {
     }
 }
 
+jacocoTestReport.dependsOn {
+    subprojects*.test
+    subprojects.findAll { it.tasks.findByName("integrationTest") != null }.integrationTest
+}
+
 sonarqube {
     properties {
         property "sonar.projectKey", "michaelruocco_json-masker"

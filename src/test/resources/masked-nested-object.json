@@ -1,0 +1,24 @@
+{
+  "textField3": "**********",
+  "numericField3": "****",
+  "booleanField3": "*****",
+  "nullField3": "****",
+  "nestedObject2": {
+    "textField4": "**********",
+    "numericField4": "*",
+    "booleanField4": "*****",
+    "nullField4": "****"
+  },
+  "textArray2": [
+    "******",
+    "******"
+  ],
+  "numericArray2": [
+    "*",
+    "****"
+  ],
+  "booleanArray2": [
+    "****",
+    "*****"
+  ]
+}

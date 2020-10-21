@@ -1,0 +1,49 @@
+{
+  "textField1": "textValue1",
+  "numericField1": 1,
+  "booleanField1": true,
+  "nullField": null,
+  "object1": {
+    "textField2": "textValue2",
+    "numericField2": 2.22,
+    "booleanField2": true,
+    "nullField2": null
+  },
+  "textArray1": [
+    "arrayItem1",
+    "arrayItem2"
+  ],
+  "numericArray1": [
+    1.11,
+    2
+  ],
+  "booleanArray1": [
+    true,
+    false
+  ],
+  "nullField1": null,
+  "nestedObject1": {
+    "textField3": "textValue3",
+    "numericField3": 3.33,
+    "booleanField3": false,
+    "nullField3": null,
+    "nestedObject2": {
+      "textField4": "textValue3",
+      "numericField4": 4,
+      "booleanField4": false,
+      "nullField4": null
+    },
+    "textArray2": [
+      "value1",
+      "value2"
+    ],
+    "numericArray2": [
+      1,
+      2.22
+    ],
+    "booleanArray2": [
+      true,
+      false
+    ]
+  }
+}

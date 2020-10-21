@@ -19,6 +19,7 @@ plugins {
     id "maven-publish"
     id "com.jfrog.bintray" version "1.8.5"
     id "com.jfrog.artifactory" version "4.17.2"
+    id "org.unbroken-dome.test-sets" version "3.0.1"
 }
 
 group "com.github.michaelruocco"
@@ -45,6 +46,10 @@ ext {
     mockitoVersion = "3.5.13"
 }
 
+testSets {
+    integrationTest
+}
+
 dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -60,8 +65,11 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testImplementation "org.assertj:assertj-core:3.17.2"
     testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
-    testImplementation "net.javacrumbs.json-unit:json-unit-assertj:2.19.0"
-    testImplementation "com.github.michaelruocco:file-loader:5.0.1"
+    testImplementation "org.mockito:mockito-core:3.5.15"
+
+    integrationTestImplementation "org.junit.jupiter:junit-jupiter-params:5.7.0"
+    integrationTestImplementation "net.javacrumbs.json-unit:json-unit-assertj:2.19.0"
+    integrationTestImplementation "com.github.michaelruocco:file-loader:5.0.1"
 }
 
 tasks.withType(Test) {

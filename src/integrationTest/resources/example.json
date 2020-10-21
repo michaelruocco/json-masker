@@ -21,6 +21,18 @@
     true,
     false
   ],
+  "objectArray1": [
+    {
+      "arrayObjectText1": "arrayObjectText1",
+      "arrayObjectNumeric1": 1,
+      "arrayObjectBoolean1": false
+    },
+    {
+      "arrayObjectText2": "arrayObjectText2",
+      "arrayObjectNumeric2": 1,
+      "arrayObjectBoolean2": false
+    }
+  ],
   "nullField1": null,
   "nestedObject1": {
     "textField3": "textValue3",

@@ -20,7 +20,7 @@ public class ObjectMasker {
 
     public Object mask(Object object) {
         if (object == null) {
-            return "****";
+            return StringUtils.repeat(maskChar, 4);
         }
         if (object instanceof JsonNode) {
             return maskNode((JsonNode) object);

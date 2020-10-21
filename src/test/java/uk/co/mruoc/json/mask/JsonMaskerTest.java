@@ -1,127 +1,91 @@
 package uk.co.mruoc.json.mask;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.MapFunction;
 import org.junit.jupiter.api.Test;
 
-import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
-import static uk.co.mruoc.file.content.ContentLoader.loadContentFromClasspath;
+import java.io.UncheckedIOException;
+import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class JsonMaskerTest {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final String EXAMPLE_JSON = loadContentFromClasspath("example.json");
+    private final ObjectMapper mapper = mock(ObjectMapper.class);
+    private final JsonPath path1 = mock(JsonPath.class);
+    private final JsonPath path2 = mock(JsonPath.class);
+    private final MapFunction maskFunction = mock(MapFunction.class);
+    private final Configuration jsonPathConfig = mock(Configuration.class);
 
-    //TODO parametize all tests except multiple paths test and custom mask char test
-    @Test
-    void shouldMaskTextField() {
-        String path = "$.textField1";
-        JsonMasker masker = buildMaskerWithPaths(path);
-
-        String masked = masker.mask(EXAMPLE_JSON);
-
-        assertThatJson(masked).whenIgnoringPaths(path).isEqualTo(EXAMPLE_JSON);
-        assertThatJson(masked).inPath(path).isEqualTo(loadContentFromClasspath("masked-text-field.json"));
-    }
+    private final JsonMasker masker = JsonMasker.builder()
+            .mapper(mapper)
+            .paths(Arrays.asList(path1, path2))
+            .maskFunction(maskFunction)
+            .jsonPathConfig(jsonPathConfig)
+            .build();
 
     @Test
-    void shouldMaskNumericField() {
-        String path = "$.numericField1";
-        JsonMasker masker = buildMaskerWithPaths(path);
+    void shouldReturnTextFromCopyOfParsedInput() {
+        String json = "{\"field\":\"value\"}";
+        JsonNode parsedNode = givenParsedTo(json);
+        String expectedJson = "{\"field\":\"*****\"}";
+        JsonNode copiedNode = givenDeepCopy(parsedNode);
+        given(copiedNode.toString()).willReturn(expectedJson);
 
-        String masked = masker.mask(EXAMPLE_JSON);
+        String masked = masker.mask(json);
 
-        assertThatJson(masked).whenIgnoringPaths(path).isEqualTo(EXAMPLE_JSON);
-        assertThatJson(masked).inPath(path).isEqualTo(loadContentFromClasspath("masked-numeric-field.json"));
-    }
-
-    @Test
-    void shouldMaskNullField() {
-        String path = "$.nullField1";
-        JsonMasker masker = buildMaskerWithPaths(path);
-
-        String masked = masker.mask(EXAMPLE_JSON);
-
-        assertThatJson(masked).whenIgnoringPaths(path).isEqualTo(EXAMPLE_JSON);
-        assertThatJson(masked).inPath(path).isEqualTo(loadContentFromClasspath("masked-null-field.json"));
+        assertThat(masked).isEqualTo(expectedJson);
     }
 
     @Test
-    void shouldMaskObject() {
-        String path = "$.object1";
-        JsonMasker masker = buildMaskerWithPaths(path);
+    void shouldApplyMaskFunctionForEveryPathConfigured() {
+        String json = "{\"field\":\"value\"}";
+        JsonNode parsedNode = givenParsedTo(json);
+        String expectedJson = "{\"field\":\"*****\"}";
+        JsonNode copiedNode = givenDeepCopy(parsedNode);
+        given(copiedNode.toString()).willReturn(expectedJson);
 
-        String masked = masker.mask(EXAMPLE_JSON);
+        masker.mask(json);
 
-        assertThatJson(masked).whenIgnoringPaths(path).isEqualTo(EXAMPLE_JSON);
-        assertThatJson(masked).inPath(path).isEqualTo(loadContentFromClasspath("masked-object.json"));
+        verify(path1).map(copiedNode, maskFunction, jsonPathConfig);
+        verify(path2).map(copiedNode, maskFunction, jsonPathConfig);
     }
 
     @Test
-    void shouldMaskTextArray() {
-        String path = "$.textArray1";
-        JsonMasker masker = buildMaskerWithPaths(path);
+    void shouldThrowExceptionIfJsonCannotBeParsed() throws JsonProcessingException {
+        String json = "{\"field\":\"value\"}";
+        JsonProcessingException cause = mock(JsonProcessingException.class);
+        given(mapper.readTree(json)).willThrow(cause);
 
-        String masked = masker.mask(EXAMPLE_JSON);
+        Throwable error = catchThrowable(() -> masker.mask(json));
 
-        assertThatJson(masked).whenIgnoringPaths(path).isEqualTo(EXAMPLE_JSON);
-        assertThatJson(masked).inPath(path).isEqualTo(loadContentFromClasspath("masked-text-array.json"));
+        assertThat(error)
+                .isInstanceOf(UncheckedIOException.class)
+                .hasCause(cause);
     }
 
-    @Test
-    void shouldMaskNumericArray() {
-        String path = "$.numericArray1";
-        JsonMasker masker = buildMaskerWithPaths(path);
-
-        String masked = masker.mask(EXAMPLE_JSON);
-
-        assertThatJson(masked).whenIgnoringPaths(path).isEqualTo(EXAMPLE_JSON);
-        assertThatJson(masked).inPath(path).isEqualTo(loadContentFromClasspath("masked-numeric-array.json"));
+    private JsonNode givenParsedTo(String json) {
+        try {
+            JsonNode parsedNode = mock(JsonNode.class);
+            given(mapper.readTree(json)).willReturn(parsedNode);
+            return parsedNode;
+        } catch (JsonProcessingException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
-    @Test
-    void shouldMaskNestedObject() {
-        String path = "$.nestedObject1";
-        JsonMasker masker = buildMaskerWithPaths(path);
-
-        String masked = masker.mask(EXAMPLE_JSON);
-
-        assertThatJson(masked).whenIgnoringPaths(path).isEqualTo(EXAMPLE_JSON);
-        assertThatJson(masked).inPath(path).isEqualTo(loadContentFromClasspath("masked-nested-object.json"));
-    }
-
-    @Test
-    void shouldMaskMultiplePaths() {
-        String[] paths = new String[] {"$.textField1", "$.numericField1"};
-        JsonMasker masker = buildMaskerWithPaths(paths);
-
-        String masked = masker.mask(EXAMPLE_JSON);
-
-        assertThatJson(masked).whenIgnoringPaths(paths).isEqualTo(EXAMPLE_JSON);
-        assertThatJson(masked).inPath(paths[0]).isEqualTo(loadContentFromClasspath("masked-text-field.json"));
-        assertThatJson(masked).inPath(paths[1]).isEqualTo(loadContentFromClasspath("masked-numeric-field.json"));
-    }
-
-    @Test
-    void shouldMaskWithCustomMaskCharacter() {
-        String path = "$.textField1";
-        JsonMasker masker = maskerBuilderWithPaths(path)
-                .maskFunction(new MaskFunction('-'))
-                .build();
-
-        String masked = masker.mask(EXAMPLE_JSON);
-
-        assertThatJson(masked).whenIgnoringPaths(path).isEqualTo(EXAMPLE_JSON);
-        assertThatJson(masked).inPath(path).isEqualTo(loadContentFromClasspath("masked-text-field-with-custom-mask.json"));
-    }
-
-    private static JsonMasker buildMaskerWithPaths(String... paths) {
-        return maskerBuilderWithPaths(paths).build();
-    }
-
-    private static JsonMasker.JsonMaskerBuilder maskerBuilderWithPaths(String... paths) {
-        return JsonMasker.builder()
-                .paths(JsonPathFactory.toJsonPaths(paths))
-                .mapper(MAPPER);
+    private JsonNode givenDeepCopy(JsonNode node) {
+        JsonNode copiedNode = mock(JsonNode.class);
+        given(node.deepCopy()).willReturn(copiedNode);
+        return copiedNode;
     }
 
 }

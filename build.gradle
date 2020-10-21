@@ -88,6 +88,7 @@ jacoco {
 jacocoTestReport {
     dependsOn integrationTest
     sourceSets sourceSets.main
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
     reports {
         xml.enabled true
         xml.destination file("${buildDir}/reports/jacoco/report.xml")

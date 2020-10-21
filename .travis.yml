@@ -37,7 +37,7 @@ stages:
 jobs:
   include:
     - stage: build
-      script: ./gradlew clean spotlessCheck build jacocoTestReport sonarqube
+      script: ./gradlew clean spotlessCheck build integrationTest jacocoTestReport sonarqube
 
     - stage: snapshot
       script: ./gradlew artifactoryPublish -Dbuild.number=$TRAVIS_BUILD_NUMBER

@@ -17,7 +17,7 @@ This library allows the masking of specific values within a JSON payload by spec
 
 ```gradle
 // formats code, builds code, runs tests
-./gradlew clean build integrationTest
+./gradlew clean spotlessApply build integrationTest
 ```
 
 ```gradle

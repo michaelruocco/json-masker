@@ -19,6 +19,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.5"
     id "com.jfrog.artifactory" version "4.17.2"
     id "org.unbroken-dome.test-sets" version "3.0.1"
+    id "nebula.lint" version "16.9.1"
 }
 
 group "com.github.michaelruocco"
@@ -49,6 +50,11 @@ testSets {
     integrationTest
 }
 
+gradleLint {
+    rules = ['all-dependency']
+    alwaysRun = false
+}
+
 dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -56,14 +62,15 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.11.3"
+    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     implementation "com.jayway.jsonpath:json-path:2.4.0"
     implementation "org.apache.commons:commons-lang3:3.11"
 
+    testRuntimeOnly "org.slf4j:slf4j-simple:${slf4jVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testImplementation "org.assertj:assertj-core:3.17.2"
-    testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
     testImplementation "org.mockito:mockito-core:3.5.15"
 
     integrationTestImplementation "org.junit.jupiter:junit-jupiter-params:5.7.0"

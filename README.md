@@ -18,11 +18,13 @@ This library allows the masking of specific values within a JSON payload by spec
 ## Useful Commands
 
 ```gradle
-// formats code, builds code, runs tests
-./gradlew clean spotlessApply build integrationTest
-```
-
-```gradle
-// check that dependencies are up to date
-./gradlew dependencyUpdates
+// cleans build directories
+// prints currentVersion
+// formats code
+// builds code
+// runs tests
+// runs integration tests
+// checks for gradle issues
+// checks dependency versions
+./gradlew clean currentVersion spotlessApply build integrationTest lineGradle dependencyUpdates
 ```

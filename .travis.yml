@@ -37,7 +37,7 @@ stages:
 jobs:
   include:
     - stage: build
-      script: ./gradlew clean spotlessCheck build integrationTest dependencyUpdates jacocoTestReport sonarqube
+      script: ./gradlew clean currentVersion spotlessCheck build integrationTest lintGradle dependencyUpdates jacocoTestReport sonarqube
 
     - stage: snapshot
       script: ./gradlew artifactoryPublish -Dbuild.number=$TRAVIS_BUILD_NUMBER
@@ -47,4 +47,5 @@ jobs:
         - >
           git checkout $TRAVIS_BRANCH;
           ./gradlew release -Prelease.customUsername=$GITHUB_TOKEN;
-          ./gradlew bintrayUpload -Dbuild.number=$TRAVIS_BUILD_NUMBER
+          ./gradlew bintrayUpload -Dbuild.number=$TRAVIS_BUILD_NUMBER;
+          ./gradlew currentVersion

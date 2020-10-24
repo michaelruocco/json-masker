@@ -8,6 +8,8 @@
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=michaelruocco_json-masker&metric=sqale_index)](https://sonarcloud.io/dashboard?id=michaelruocco_json-masker)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=michaelruocco_json-masker&metric=coverage)](https://sonarcloud.io/dashboard?id=michaelruocco_json-masker)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=michaelruocco_json-masker&metric=ncloc)](https://sonarcloud.io/dashboard?id=michaelruocco_json-masker)
+[![Download](https://api.bintray.com/packages/michaelruocco/maven/json-masker/images/download.svg) ](https://bintray.com/michaelruocco/maven/json-masker/_latestVersion)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.michaelruocco/json-masker.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.michaelruocco%22%20AND%20a:%22json-masker%22)
 
 ## Overview
 

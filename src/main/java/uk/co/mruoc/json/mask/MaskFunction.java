@@ -10,7 +10,11 @@ public class MaskFunction implements MapFunction {
     private final ObjectMasker masker;
 
     public MaskFunction(char maskChar) {
-        this(new ObjectMasker(maskChar));
+        this(new DefaultValueMasker(maskChar));
+    }
+
+    public MaskFunction(ValueMasker valueMasker) {
+        this(new ObjectMasker(valueMasker));
     }
 
     public MaskFunction() {

@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.MapFunction;
-import com.jayway.jsonpath.Option;
-import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,6 +15,7 @@ import java.util.Collection;
 
 @Builder
 @Slf4j
+@AllArgsConstructor
 public class JsonMasker {
 
     private final ObjectMapper mapper;
@@ -25,7 +25,7 @@ public class JsonMasker {
     private final MapFunction maskFunction = new MaskFunction();
 
     @Builder.Default
-    private final Configuration jsonPathConfig = buildDefaultJsonPathConfig();
+    private final Configuration jsonPathConfig = DefaultJsonPathConfig.build();
 
     public String mask(String json) {
         try {
@@ -41,13 +41,6 @@ public class JsonMasker {
         JsonNode result = target.deepCopy();
         paths.forEach(path -> path.map(result, maskFunction, jsonPathConfig));
         return result;
-    }
-
-    private static Configuration buildDefaultJsonPathConfig() {
-        return Configuration.builder()
-                .jsonProvider(new JacksonJsonNodeJsonProvider())
-                .options(Option.AS_PATH_LIST)
-                .build();
     }
 
 }

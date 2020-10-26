@@ -12,11 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.UncheckedIOException;
 import java.util.Collection;
+import java.util.function.UnaryOperator;
 
 @Builder
 @Slf4j
 @AllArgsConstructor
-public class JsonMasker {
+public class JsonMasker implements UnaryOperator<String> {
 
     private final ObjectMapper mapper;
     private final Collection<JsonPath> paths;
@@ -27,7 +28,8 @@ public class JsonMasker {
     @Builder.Default
     private final Configuration jsonPathConfig = DefaultJsonPathConfig.build();
 
-    public String mask(String json) {
+    @Override
+    public String apply(String json) {
         try {
             JsonNode input = mapper.readTree(json);
             JsonNode output = mask(input);

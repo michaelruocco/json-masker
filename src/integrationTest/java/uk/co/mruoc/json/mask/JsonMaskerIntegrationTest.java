@@ -28,7 +28,7 @@ class JsonMaskerIntegrationTest {
     void shouldMaskTextField(String jsonPath, String expectedJsonFilePath) {
         JsonMasker masker = buildMaskerWithPaths(jsonPath);
 
-        String masked = masker.mask(EXAMPLE_JSON);
+        String masked = masker.apply(EXAMPLE_JSON);
 
         assertThatJson(masked).whenIgnoringPaths(jsonPath).isEqualTo(EXAMPLE_JSON);
         assertThatJson(masked).inPath(jsonPath).isEqualTo(loadContentFromClasspath(expectedJsonFilePath));
@@ -39,7 +39,7 @@ class JsonMaskerIntegrationTest {
         String[] paths = new String[]{"$.textField1","$.numericField1"};
         JsonMasker masker = buildMaskerWithPaths(paths);
 
-        String masked = masker.mask(EXAMPLE_JSON);
+        String masked = masker.apply(EXAMPLE_JSON);
 
         assertThatJson(masked).whenIgnoringPaths(paths).isEqualTo(EXAMPLE_JSON);
         assertThatJson(masked).inPath(paths[0]).isEqualTo(loadContentFromClasspath("masked-text-field.json"));
@@ -53,7 +53,7 @@ class JsonMaskerIntegrationTest {
                 .maskFunction(new MaskFunction('-'))
                 .build();
 
-        String masked = masker.mask(EXAMPLE_JSON);
+        String masked = masker.apply(EXAMPLE_JSON);
 
         assertThatJson(masked).whenIgnoringPaths(path).isEqualTo(EXAMPLE_JSON);
         assertThatJson(masked).inPath(path).isEqualTo(loadContentFromClasspath("masked-text-field-with-custom-mask.json"));

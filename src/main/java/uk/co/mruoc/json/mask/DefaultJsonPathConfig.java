@@ -13,7 +13,7 @@ public interface DefaultJsonPathConfig {
     static Configuration.ConfigurationBuilder builder() {
         return Configuration.builder()
                 .jsonProvider(new JacksonJsonNodeJsonProvider())
-                .options(Option.AS_PATH_LIST);
+                .options(Option.AS_PATH_LIST, Option.SUPPRESS_EXCEPTIONS);
     }
 
 }

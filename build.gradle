@@ -19,7 +19,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.5"
     id "com.jfrog.artifactory" version "4.17.2"
     id "org.unbroken-dome.test-sets" version "3.0.1"
-    id "nebula.lint" version "16.9.1"
+    id "nebula.lint" version "16.10.0"
 }
 
 group "com.github.michaelruocco"

@@ -5,24 +5,27 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import lombok.RequiredArgsConstructor;
+import uk.co.mruoc.json.mask.string.StringMasker;
+
+import java.util.function.UnaryOperator;
 
 @RequiredArgsConstructor
 public class ObjectMasker {
 
-    private final ValueMasker valueMasker;
+    private final UnaryOperator<String> stringMasker;
 
     public ObjectMasker() {
-        this(new DefaultValueMasker());
+        this(new StringMasker());
     }
 
     public Object mask(Object object) {
         if (object == null) {
-            return valueMasker.mask(null);
+            return stringMasker.apply(null);
         }
         if (object instanceof JsonNode) {
             return maskNode((JsonNode) object);
         }
-        return valueMasker.mask(object.toString());
+        return stringMasker.apply(object.toString());
     }
 
     private JsonNode maskNode(JsonNode node) {
@@ -32,7 +35,7 @@ public class ObjectMasker {
         if (node instanceof ArrayNode) {
             return maskArrayNode((ArrayNode) node);
         }
-        return new TextNode(valueMasker.mask(node.asText()));
+        return new TextNode(stringMasker.apply(node.asText()));
     }
 
     private ObjectNode maskObjectNode(ObjectNode node) {

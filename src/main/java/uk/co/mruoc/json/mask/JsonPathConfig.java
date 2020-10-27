@@ -7,17 +7,17 @@ import com.jayway.jsonpath.spi.json.JsonProvider;
 
 public class JsonPathConfig {
 
-    static final JsonProvider DEFAULT_PROVIDER = new JacksonJsonNodeJsonProvider();
+    private static final JsonProvider DEFAULT_PROVIDER = new JacksonJsonNodeJsonProvider();
 
     private JsonPathConfig() {
         // utility class
     }
 
-    static Configuration build() {
+    public static Configuration build() {
         return builder().build();
     }
 
-    static Configuration withNoOptions() {
+    public static Configuration withNoOptions() {
         return Configuration.builder()
                 .jsonProvider(DEFAULT_PROVIDER)
                 .options()

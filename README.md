@@ -1,5 +1,6 @@
 # JSON Masker
 
+[![Build](https://github.com/michaelruocco/json-masker/workflows/build/badge.svg)](https://github.com/michaelruocco/json-masker/actions)
 [![Build Status](https://travis-ci.org/michaelruocco/json-masker.svg?branch=master)](https://travis-ci.org/michaelruocco/json-masker)
 [![codecov](https://codecov.io/gh/michaelruocco/json-masker/branch/master/graph/badge.svg?token=FWDNP534O7)](https://codecov.io/gh/michaelruocco/json-masker)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/6890f592d8084b6e91e15d1788211c57)](https://www.codacy.com/gh/michaelruocco/json-masker/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=michaelruocco/json-masker&amp;utm_campaign=Badge_Grade)

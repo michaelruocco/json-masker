@@ -39,18 +39,18 @@ jobs:
       - name: Test
         run: ./gradlew test integrationTest
 
-      - name: Sonar
+      - name: Sonar Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONARCLOUD_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
         run: ./gradlew sonarqube
 
-      - name: Codecov
+      - name: Codecov Coverage
         uses: codecov/codecov-action@v1
         with:
           file: ./build/reports/jacoco/report.xml
 
-      - name: Codacy
+      - name: Codacy Coverage
         uses: codacy/codacy-coverage-reporter-action@master
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}

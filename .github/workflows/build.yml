@@ -10,9 +10,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+
+      - uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Current Version
+        run: ./gradlew currentVersion
+
+      - name: Check Dependencies
+        run: ./gradlew dependencyUpdates
+
       - name: Build
-        run: ./gradlew clean currentVersion spotlessCheck build integrationTest lintGradle dependencyUpdates jacocoTestReport
+        run: ./gradlew clean spotlessCheck lintGradle build -x test
+
+      - name: Test
+        run: ./gradlew test integrationTest
+
+      - name: Sonar
+        env:
+          SONARCLOUD_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+        run: ./gradlew sonarqube

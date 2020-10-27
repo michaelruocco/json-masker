@@ -93,7 +93,7 @@ jacoco {
 }
 
 jacocoTestReport {
-    dependsOn integrationTest
+    dependsOn test, integrationTest
     sourceSets sourceSets.main
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
     reports {
@@ -102,8 +102,12 @@ jacocoTestReport {
     }
 }
 
+project.tasks["sonarqube"].dependsOn jacocoTestReport
 sonarqube {
     properties {
+        property "sonar.login", System.getenv("SONARCLOUD_TOKEN")
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "michaelruocco"
         property "sonar.projectKey", "michaelruocco_json-masker"
         property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/report.xml"
     }

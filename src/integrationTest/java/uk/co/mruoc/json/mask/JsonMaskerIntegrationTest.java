@@ -1,11 +1,14 @@
 package uk.co.mruoc.json.mask;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.PathNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static uk.co.mruoc.file.content.ContentLoader.loadContentFromClasspath;
 
 class JsonMaskerIntegrationTest {
@@ -28,7 +31,7 @@ class JsonMaskerIntegrationTest {
     void shouldMaskTextField(String jsonPath, String expectedJsonFilePath) {
         JsonMasker masker = buildMaskerWithPaths(jsonPath);
 
-        String masked = masker.mask(EXAMPLE_JSON);
+        String masked = masker.apply(EXAMPLE_JSON);
 
         assertThatJson(masked).whenIgnoringPaths(jsonPath).isEqualTo(EXAMPLE_JSON);
         assertThatJson(masked).inPath(jsonPath).isEqualTo(loadContentFromClasspath(expectedJsonFilePath));
@@ -39,7 +42,7 @@ class JsonMaskerIntegrationTest {
         String[] paths = new String[]{"$.textField1","$.numericField1"};
         JsonMasker masker = buildMaskerWithPaths(paths);
 
-        String masked = masker.mask(EXAMPLE_JSON);
+        String masked = masker.apply(EXAMPLE_JSON);
 
         assertThatJson(masked).whenIgnoringPaths(paths).isEqualTo(EXAMPLE_JSON);
         assertThatJson(masked).inPath(paths[0]).isEqualTo(loadContentFromClasspath("masked-text-field.json"));
@@ -53,10 +56,52 @@ class JsonMaskerIntegrationTest {
                 .maskFunction(new MaskFunction('-'))
                 .build();
 
-        String masked = masker.mask(EXAMPLE_JSON);
+        String masked = masker.apply(EXAMPLE_JSON);
 
         assertThatJson(masked).whenIgnoringPaths(path).isEqualTo(EXAMPLE_JSON);
         assertThatJson(masked).inPath(path).isEqualTo(loadContentFromClasspath("masked-text-field-with-custom-mask.json"));
+    }
+
+    @Test
+    void shouldIgnorePathsToFieldThatIsNotPresentByDefault() {
+        String path = "$.notPresentField.test";
+        JsonMasker masker = maskerBuilderWithPaths(path).build();
+
+        String masked = masker.apply(EXAMPLE_JSON);
+
+        assertThatJson(masked).isEqualTo(EXAMPLE_JSON);
+    }
+
+    @Test
+    void shouldIgnorePathsOnEmptyString() {
+        String path = "$.textField1";
+        JsonMasker masker = maskerBuilderWithPaths(path).build();
+
+        String masked = masker.apply("");
+
+        assertThat(masked).isEmpty();
+    }
+
+    @Test
+    void shouldIgnorePathsOnNullString() {
+        String path = "$.textField1";
+        JsonMasker masker = maskerBuilderWithPaths(path).build();
+
+        String masked = masker.apply(null);
+
+        assertThat(masked).isEmpty();
+    }
+
+    @Test
+    void shouldThrowExceptionOnPathToFieldThatIsNotPresentIfExceptionsAreNotSuppressed() {
+        String path = "$.notPresentField.test";
+        JsonMasker masker = maskerBuilderWithPaths(path)
+                .jsonPathConfig(JsonPathConfig.withNoOptions())
+                .build();
+
+        Throwable error = catchThrowable(() -> masker.apply(EXAMPLE_JSON));
+
+        assertThat(error).isInstanceOf(PathNotFoundException.class);
     }
 
     private static JsonMasker buildMaskerWithPaths(String... paths) {

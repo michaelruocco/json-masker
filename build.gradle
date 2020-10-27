@@ -17,9 +17,9 @@ plugins {
     id "org.sonarqube" version "3.0"
     id "maven-publish"
     id "com.jfrog.bintray" version "1.8.5"
-    id "com.jfrog.artifactory" version "4.17.2"
+    id "com.jfrog.artifactory" version "4.18.0"
     id "org.unbroken-dome.test-sets" version "3.0.1"
-    id "nebula.lint" version "16.9.1"
+    id "nebula.lint" version "16.10.0"
 }
 
 group "com.github.michaelruocco"
@@ -70,12 +70,12 @@ dependencies {
     testRuntimeOnly "org.slf4j:slf4j-simple:${slf4jVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-    testImplementation "org.assertj:assertj-core:3.17.2"
-    testImplementation "org.mockito:mockito-core:3.5.15"
+    testImplementation "org.assertj:assertj-core:3.18.0"
+    testImplementation "org.mockito:mockito-core:3.6.0"
 
     integrationTestImplementation "org.junit.jupiter:junit-jupiter-params:5.7.0"
     integrationTestImplementation "net.javacrumbs.json-unit:json-unit-assertj:2.19.0"
-    integrationTestImplementation "com.github.michaelruocco:file-loader:5.0.1"
+    integrationTestImplementation "com.github.michaelruocco:file-loader:6.0.1"
 }
 
 tasks.withType(Test) {
@@ -93,7 +93,7 @@ jacoco {
 }
 
 jacocoTestReport {
-    dependsOn integrationTest
+    dependsOn test, integrationTest
     sourceSets sourceSets.main
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
     reports {
@@ -102,8 +102,12 @@ jacocoTestReport {
     }
 }
 
+project.tasks["sonarqube"].dependsOn jacocoTestReport
 sonarqube {
     properties {
+        property "sonar.login", System.getenv("SONARCLOUD_TOKEN")
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "michaelruocco"
         property "sonar.projectKey", "michaelruocco_json-masker"
         property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/report.xml"
     }

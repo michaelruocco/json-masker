@@ -1,0 +1,73 @@
+name: pipeline
+
+on:
+  push:
+    branches-ignore:
+      - 'json-masker-*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Setup Gradle Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Print Current Version
+        run: ./gradlew currentVersion
+
+      - name: Check Dependencies
+        run: ./gradlew dependencyUpdates
+
+      - name: Build
+        run: ./gradlew clean spotlessCheck lintGradle build -x test
+
+      - name: Test
+        run: ./gradlew test integrationTest
+
+      - name: Sonar Analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONARCLOUD_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+        run: ./gradlew sonarqube
+
+      - name: Codecov Coverage
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./build/reports/jacoco/report.xml
+
+      - name: Codacy Coverage
+        uses: codacy/codacy-coverage-reporter-action@master
+        with:
+          project-token: ${{ secrets.CODACY_TOKEN }}
+          coverage-reports: ./build/reports/jacoco/report.xml
+
+      - name: Publish snapshot
+        if: github.ref != 'refs/heads/master'
+        env:
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
+        run: ./gradlew artifactoryPublish -Dbuild.number=$GITHUB_RUN_NUMBER
+
+      - name: Release
+        if: github.ref == 'refs/heads/master'
+        run: |
+          ./gradlew release -Prelease.customUsername=$GITHUB_TOKEN;
+          ./gradlew bintrayUpload -Dbuild.number=$TRAVIS_BUILD_NUMBER;
+          ./gradlew currentVersion

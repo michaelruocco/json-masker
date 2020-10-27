@@ -6,17 +6,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.MapFunction;
-import com.jayway.jsonpath.Option;
-import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.UncheckedIOException;
 import java.util.Collection;
+import java.util.function.UnaryOperator;
 
 @Builder
 @Slf4j
-public class JsonMasker {
+@AllArgsConstructor
+public class JsonMasker implements UnaryOperator<String> {
 
     private final ObjectMapper mapper;
     private final Collection<JsonPath> paths;
@@ -25,10 +27,14 @@ public class JsonMasker {
     private final MapFunction maskFunction = new MaskFunction();
 
     @Builder.Default
-    private final Configuration jsonPathConfig = buildDefaultJsonPathConfig();
+    private final Configuration jsonPathConfig = JsonPathConfig.build();
 
-    public String mask(String json) {
+    @Override
+    public String apply(String json) {
         try {
+            if (StringUtils.isEmpty(json)) {
+                return StringUtils.EMPTY;
+            }
             JsonNode input = mapper.readTree(json);
             JsonNode output = mask(input);
             return output.toString();
@@ -41,13 +47,6 @@ public class JsonMasker {
         JsonNode result = target.deepCopy();
         paths.forEach(path -> path.map(result, maskFunction, jsonPathConfig));
         return result;
-    }
-
-    private static Configuration buildDefaultJsonPathConfig() {
-        return Configuration.builder()
-                .jsonProvider(new JacksonJsonNodeJsonProvider())
-                .options(Option.AS_PATH_LIST)
-                .build();
     }
 
 }

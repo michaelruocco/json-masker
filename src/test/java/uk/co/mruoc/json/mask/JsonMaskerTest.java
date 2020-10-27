@@ -40,7 +40,7 @@ class JsonMaskerTest {
         JsonNode copiedNode = givenDeepCopy(parsedNode);
         given(copiedNode.toString()).willReturn(expectedJson);
 
-        String masked = masker.mask(json);
+        String masked = masker.apply(json);
 
         assertThat(masked).isEqualTo(expectedJson);
     }
@@ -53,7 +53,7 @@ class JsonMaskerTest {
         JsonNode copiedNode = givenDeepCopy(parsedNode);
         given(copiedNode.toString()).willReturn(expectedJson);
 
-        masker.mask(json);
+        masker.apply(json);
 
         verify(path1).map(copiedNode, maskFunction, jsonPathConfig);
         verify(path2).map(copiedNode, maskFunction, jsonPathConfig);
@@ -65,7 +65,7 @@ class JsonMaskerTest {
         JsonProcessingException cause = mock(JsonProcessingException.class);
         given(mapper.readTree(json)).willThrow(cause);
 
-        Throwable error = catchThrowable(() -> masker.mask(json));
+        Throwable error = catchThrowable(() -> masker.apply(json));
 
         assertThat(error)
                 .isInstanceOf(UncheckedIOException.class)

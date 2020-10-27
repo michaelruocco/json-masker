@@ -5,27 +5,27 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+import uk.co.mruoc.json.mask.string.StringMasker;
+
+import java.util.function.UnaryOperator;
 
 @RequiredArgsConstructor
 public class ObjectMasker {
 
-    private static final char DEFAULT_MASK_CHAR = '*';
-
-    private final char maskChar;
+    private final UnaryOperator<String> stringMasker;
 
     public ObjectMasker() {
-        this(DEFAULT_MASK_CHAR);
+        this(new StringMasker());
     }
 
     public Object mask(Object object) {
         if (object == null) {
-            return StringUtils.repeat(maskChar, 4);
+            return stringMasker.apply(null);
         }
         if (object instanceof JsonNode) {
             return maskNode((JsonNode) object);
         }
-        return maskString(object.toString());
+        return stringMasker.apply(object.toString());
     }
 
     private JsonNode maskNode(JsonNode node) {
@@ -35,7 +35,7 @@ public class ObjectMasker {
         if (node instanceof ArrayNode) {
             return maskArrayNode((ArrayNode) node);
         }
-        return new TextNode(maskString(node.asText()));
+        return new TextNode(stringMasker.apply(node.asText()));
     }
 
     private ObjectNode maskObjectNode(ObjectNode node) {
@@ -50,10 +50,6 @@ public class ObjectMasker {
             copy.set(i, maskNode(node.get(i)));
         }
         return copy;
-    }
-
-    private String maskString(String value) {
-        return StringUtils.repeat(maskChar, value.length());
     }
 
 }

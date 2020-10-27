@@ -70,6 +70,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./gradlew release -Prelease.customUsername=$GITHUB_TOKEN;
-          ./gradlew bintrayUpload -Dbuild.number=$TRAVIS_BUILD_NUMBER;
+          ./gradlew release -Prelease.customUsername=$GITHUB_TOKEN
+          ./gradlew bintrayUpload -Dbuild.number=$TRAVIS_BUILD_NUMBER
           ./gradlew currentVersion

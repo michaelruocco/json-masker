@@ -28,11 +28,11 @@ after_success:
 stages:
   - name: build
 
-  - name: snapshot
-    if: branch != master
+#  - name: snapshot
+#    if: branch != master
 
-  - name: release
-    if: branch = master
+#  - name: release
+#    if: branch = master
 
 jobs:
   include:

@@ -57,5 +57,5 @@ jobs:
           coverage-reports: ./build/reports/jacoco/report.xml
 
       - name: Publish snapshot
-        if: contains(github.ref, '!master')
+        if: contains(github.ref, '!:master')
         run: ./gradlew artifactoryPublish -Dbuild.number=$GITHUB_RUN_NUMBER

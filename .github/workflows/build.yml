@@ -55,3 +55,7 @@ jobs:
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
           coverage-reports: ./build/reports/jacoco/report.xml
+
+      - name: Publish snapshot
+        if: !contains(github.ref, "master")
+        run: ./gradlew artifactoryPublish -Dbuild.number=$GITHUB_RUN_NUMBER

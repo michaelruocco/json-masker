@@ -24,7 +24,7 @@ public class JsonPathConfig {
                 .build();
     }
 
-    static Configuration.ConfigurationBuilder builder() {
+    public static Configuration.ConfigurationBuilder builder() {
         return Configuration.builder()
                 .jsonProvider(DEFAULT_PROVIDER)
                 .options(Option.AS_PATH_LIST, Option.SUPPRESS_EXCEPTIONS);

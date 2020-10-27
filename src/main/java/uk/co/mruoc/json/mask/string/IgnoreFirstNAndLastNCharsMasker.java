@@ -23,9 +23,6 @@ public class IgnoreFirstNAndLastNCharsMasker implements UnaryOperator<String> {
         if (value == null) {
             return mask("null");
         }
-        if (value.length() <= lastN) {
-            return value;
-        }
         return mask(value);
     }
 

@@ -26,7 +26,7 @@ public class JsonMasker implements UnaryOperator<String> {
     private final MapFunction maskFunction = new MaskFunction();
 
     @Builder.Default
-    private final Configuration jsonPathConfig = DefaultJsonPathConfig.build();
+    private final Configuration jsonPathConfig = JsonPathConfig.build();
 
     @Override
     public String apply(String json) {

@@ -44,3 +44,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONARCLOUD_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
         run: ./gradlew sonarqube
+
+      - name: Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./build/reports/jacoco/report.xml
+
+      - name: Codacy
+        uses: codacy/codacy-coverage-reporter-action@master
+        with:
+          project-token: ${{ secrets.CODACY_TOKEN }}
+          coverage-reports: /build/reports/jacoco/report.xml

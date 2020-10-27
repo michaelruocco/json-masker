@@ -9,6 +9,7 @@ import com.jayway.jsonpath.MapFunction;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.UncheckedIOException;
 import java.util.Collection;
@@ -31,6 +32,9 @@ public class JsonMasker implements UnaryOperator<String> {
     @Override
     public String apply(String json) {
         try {
+            if (StringUtils.isEmpty(json)) {
+                return StringUtils.EMPTY;
+            }
             JsonNode input = mapper.readTree(json);
             JsonNode output = mask(input);
             return output.toString();

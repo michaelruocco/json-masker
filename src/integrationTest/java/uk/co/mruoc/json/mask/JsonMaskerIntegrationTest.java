@@ -73,6 +73,26 @@ class JsonMaskerIntegrationTest {
     }
 
     @Test
+    void shouldIgnorePathsOnEmptyString() {
+        String path = "$.textField1";
+        JsonMasker masker = maskerBuilderWithPaths(path).build();
+
+        String masked = masker.apply("");
+
+        assertThat(masked).isEmpty();
+    }
+
+    @Test
+    void shouldIgnorePathsOnNullString() {
+        String path = "$.textField1";
+        JsonMasker masker = maskerBuilderWithPaths(path).build();
+
+        String masked = masker.apply(null);
+
+        assertThat(masked).isEmpty();
+    }
+
+    @Test
     void shouldThrowExceptionOnPathToFieldThatIsNotPresentIfExceptionsAreNotSuppressed() {
         String path = "$.notPresentField.test";
         JsonMasker masker = maskerBuilderWithPaths(path)

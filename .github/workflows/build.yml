@@ -9,13 +9,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-java@v1
+      - name: Setup JDK
+        uses: actions/setup-java@v1
         with:
           java-version: 11
 
-      - uses: actions/cache@v2
+      - name: Setup Gradle Cache
+        uses: actions/cache@v2
         with:
           path: |
             ~/.gradle/caches
@@ -24,7 +27,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Current Version
+      - name: Print Current Version
         run: ./gradlew currentVersion
 
       - name: Check Dependencies

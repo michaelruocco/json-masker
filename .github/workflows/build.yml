@@ -54,4 +54,4 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@master
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
-          coverage-reports: /build/reports/jacoco/report.xml
+          coverage-reports: ./build/reports/jacoco/report.xml

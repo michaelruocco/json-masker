@@ -67,9 +67,7 @@ jobs:
 
       - name: Release
         if: github.ref == 'refs/heads/master'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./gradlew release -Prelease.customUsername=$GITHUB_TOKEN
-          ./gradlew bintrayUpload -Dbuild.number=$TRAVIS_BUILD_NUMBER
+          ./gradlew release -Prelease.customUsername=${{ github.actor }} -Prelease.customPassword=${{ github.token }}
+          ./gradlew bintrayUpload -Dbuild.number=$GITHUB_RUN_NUMBER
           ./gradlew currentVersion

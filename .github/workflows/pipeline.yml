@@ -67,6 +67,9 @@ jobs:
 
       - name: Release
         if: github.ref == 'refs/heads/master'
+        env:
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
         run: |
           ./gradlew release -Prelease.customUsername=${{ github.actor }} -Prelease.customPassword=${{ github.token }}
           ./gradlew bintrayUpload -Dbuild.number=$GITHUB_RUN_NUMBER

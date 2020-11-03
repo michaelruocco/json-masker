@@ -26,5 +26,5 @@ This library allows the masking of specific values within a JSON payload by spec
 // runs integration tests
 // checks for gradle issues
 // checks dependency versions
-./gradlew clean currentVersion spotlessApply build integrationTest lintGradle dependencyUpdates
+./gradlew clean currentVersion dependencyUpdates spotlessApply lintGradle build integrationTest
 ```

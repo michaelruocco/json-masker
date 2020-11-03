@@ -19,6 +19,13 @@ jobs:
         with:
           java-version: 11
 
+      - name: Setup SonarCloud Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
       - name: Setup Gradle Cache
         uses: actions/cache@v2
         with:
@@ -27,7 +34,7 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-gradle
 
       - name: Print Current Version
         run: ./gradlew currentVersion
@@ -36,15 +43,18 @@ jobs:
         run: ./gradlew dependencyUpdates
 
       - name: Build
-        run: ./gradlew clean spotlessCheck lintGradle build -x test
+        run: ./gradlew clean spotlessCheck lintGradle assemble
 
       - name: Test
-        run: ./gradlew test integrationTest
+        run: ./gradlew test
+
+      - name: Integration Test
+        run: ./gradlew integrationTest
 
       - name: Sonar Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONARCLOUD_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew sonarqube
 
       - name: Codecov Coverage
@@ -63,7 +73,7 @@ jobs:
         env:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
-        run: ./gradlew artifactoryPublish -Dbuild.number=$GITHUB_RUN_NUMBER
+        run: ./gradlew artifactoryPublish -Dbuild.number=${{ github.run_number }}
 
       - name: Release
         if: github.ref == 'refs/heads/master'
@@ -72,5 +82,5 @@ jobs:
           BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
         run: |
           ./gradlew release -Prelease.customUsername=${{ github.actor }} -Prelease.customPassword=${{ github.token }}
-          ./gradlew bintrayUpload -Dbuild.number=$GITHUB_RUN_NUMBER
+          ./gradlew bintrayUpload -Dbuild.number=${{ github.run_number }}
           ./gradlew currentVersion

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import lombok.RequiredArgsConstructor;
-import uk.co.mruoc.json.mask.string.StringMasker;
+import uk.co.mruoc.string.mask.StringMasker;
 
 import java.util.function.UnaryOperator;
 

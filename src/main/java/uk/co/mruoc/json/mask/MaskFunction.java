@@ -3,7 +3,7 @@ package uk.co.mruoc.json.mask;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.MapFunction;
 import lombok.RequiredArgsConstructor;
-import uk.co.mruoc.json.mask.string.StringMasker;
+import uk.co.mruoc.string.mask.StringMasker;
 
 import java.util.function.UnaryOperator;
 

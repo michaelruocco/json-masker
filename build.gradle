@@ -66,6 +66,7 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     implementation "com.jayway.jsonpath:json-path:2.4.0"
     implementation "org.apache.commons:commons-lang3:3.11"
+    implementation "com.github.michaelruocco:string-utils:0.1.2"
 
     testRuntimeOnly "org.slf4j:slf4j-simple:${slf4jVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"

@@ -123,7 +123,7 @@ java {
     withSourcesJar()
 }
 
-def gitUrl = "https://github.com/michaelruocco/library-template"
+def gitUrl = "https://github.com/michaelruocco/json-masker"
 def pomConfig = {
     licenses {
         license {

@@ -9,6 +9,7 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=michaelruocco_json-masker&metric=coverage)](https://sonarcloud.io/dashboard?id=michaelruocco_json-masker)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=michaelruocco_json-masker&metric=ncloc)](https://sonarcloud.io/dashboard?id=michaelruocco_json-masker)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.michaelruocco/json-masker.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.michaelruocco%22%20AND%20a:%22json-masker%22)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
 

@@ -10,6 +10,7 @@ buildscript {
 
 plugins {
     id "java-library"
+    id "java-test-fixtures"
     id "jacoco"
     id "maven-publish"
     id "signing"
@@ -43,7 +44,9 @@ ext {
 
     junitVersion = "5.7.0"
     junitPioneerVersion = "1.0.0"
+    jsonUnitAssertjVersion = "2.22.0"
     mockitoVersion = "3.5.13"
+    fileLoaderVersion = "6.0.1"
 }
 
 testSets {
@@ -73,10 +76,12 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testImplementation "org.assertj:assertj-core:3.18.1"
     testImplementation "org.mockito:mockito-core:3.6.28"
+    testImplementation "net.javacrumbs.json-unit:json-unit-assertj:${jsonUnitAssertjVersion}"
+    testImplementation "com.github.michaelruocco:file-loader:${fileLoaderVersion}"
 
-    integrationTestImplementation "org.junit.jupiter:junit-jupiter-params:5.7.0"
-    integrationTestImplementation "net.javacrumbs.json-unit:json-unit-assertj:2.22.0"
-    integrationTestImplementation "com.github.michaelruocco:file-loader:6.0.1"
+    integrationTestImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+    integrationTestImplementation "net.javacrumbs.json-unit:json-unit-assertj:${jsonUnitAssertjVersion}"
+    integrationTestImplementation "com.github.michaelruocco:file-loader:${fileLoaderVersion}"
 }
 
 tasks.withType(Test) {
